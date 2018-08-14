@@ -8,8 +8,6 @@
 #include <dirent.h>
 #include <regex>
 
-
-
 class FileMover
 {
     public:
@@ -21,19 +19,21 @@ class FileMover
         void setSource(std::string source);
 
         std::vector <std::string> get_files(std::string path);
+        std::vector<std::string>getSourceFiles();
         std::string reg(std::string name);
         std::vector<std::string> search_folder(std::string keywords, std::vector<std::string> files);
         void copy_file(std::string pathname, std::string dest);
         void print_vector(std::vector<std::string> vec);
         bool file_exists(std::string filepath);
         void copy_matches(std::vector<std::string> matches);
+        std::vector<std::string> convertToLower(std::vector<std::string> vec);
+        std::string convertToLower(std::string str);
 
     protected:
 
     private:
         std::string destinationPath;
         std::string sourcePath;
-        std::string keywords;
 
 };
 
