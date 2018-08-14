@@ -42,7 +42,7 @@ std::vector <std::string> FileMover::get_files(std::string path) {
 
     if ((directory = opendir(path.c_str())) != NULL){
         while ((info = readdir(directory)) != nullptr){
-            std::string fullPath = path + "\\" + info->d_name;
+            std::string fullPath = path + "/" + info->d_name;
             if (stat(fullPath.c_str(), &folderInfo) == 0 && (S_ISREG(folderInfo.st_mode)))
                 fileNames.std::vector<std::string>::push_back(info->d_name);
         }
@@ -91,13 +91,15 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest){
         int buff_size = 1024 * 1024;
         char * buff = new char[buff_size];//1 MB buffer
         long long total = 0;//counter used to keep track of progress
-        while (total < file_size) {
-            srcFile.read(buff, buff_size);//write to buffer
-            destFile.write(buff, buff_size);//read from buffer
-            total += buff_size;//increment the progress of file copying
+        if (file_size > buff_size) {
+            while (total < file_size) {
+                srcFile.read(buff, buff_size);//write to buffer
+                destFile.write(buff, buff_size);//read from buffer
+                total += buff_size;//increment the progress of file copying
 
             //std::cout << ((float)total/(float)file_size) * 100;
             //std::cout << "\r";
+        }
         }
     }
     srcFile.close();
@@ -119,9 +121,9 @@ bool FileMover::file_exists(std::string pathname){
 void FileMover::copy_matches(std::vector<std::string> matches){
     //loop through file names that matched with search words
     for (unsigned i = 0; i < matches.size(); i++){
-        if (!file_exists(destinationPath + "\\" + matches[i])){//if file doesnt exist in destination folder
+        if (!file_exists(destinationPath + "/" + matches[i])){//if file doesnt exist in destination folder
             printf("Copying %s from %s to %s\n", matches[i].c_str(), sourcePath.c_str(), destinationPath.c_str());
-            copy_file(sourcePath + "\\" + matches[i], destinationPath + "\\" + matches[i]);
+            copy_file(sourcePath + "/" + matches[i], destinationPath + "/" + matches[i]);
             std::cout<< "Copying complete" << std::endl;
         } else {//if file already exists in destination folder
             printf("Error: %s already exists in %s \n", matches[i].c_str(), destinationPath.c_str());

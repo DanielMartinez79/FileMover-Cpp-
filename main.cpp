@@ -41,7 +41,7 @@ vector<string> convertToLower(vector<string> vec){
 
 int main()
 {
-
+    while (true) {
     //ask user for the path of the folder they want to search
     string pathSrc = prompt("Where do I search?");
     if (verify_folder(pathSrc)){ //verify that the folder exists
@@ -54,7 +54,6 @@ int main()
             //getting a vector of the files in the source path
             vector <string> files = fm.getSourceFiles();
             files = convertToLower(files);
-            fm.print_vector(files);
             //asking user what words to search for in the source folder
             string searchFor = prompt("What should I search for?");
             //searching the titles of files in the search folder to match with keywords given by user
@@ -75,7 +74,7 @@ int main()
     } else {
         cout << "Source folder not found" <<endl;
     }
-
+    }
     return 0;
 }
 
