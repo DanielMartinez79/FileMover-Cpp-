@@ -99,7 +99,11 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest){
 
             //std::cout << ((float)total/(float)file_size) * 100;
             //std::cout << "\r";
-        }
+            }
+        } else {
+            srcFile.read(buff, file_size);
+            destFile.write(buff, file_size);
+
         }
     }
     srcFile.close();

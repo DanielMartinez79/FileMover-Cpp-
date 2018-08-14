@@ -60,9 +60,9 @@ int main()
             vector<string> matches = fm.search_folder( fm.reg(searchFor), files);
 
             if (matches.size() > 0) {
-                cout << "The following matches were found: "<< endl;
+                cout << "The following matches were found: \n"<< endl;
                 fm.print_vector(matches);
-                if (prompt("Would you like to copy these files? (y/n)").compare("y") == 0){
+                if (prompt("\nWould you like to copy these files? (y/n)").compare("y") == 0){
                     fm.copy_matches(matches);
                 }
             } else {
