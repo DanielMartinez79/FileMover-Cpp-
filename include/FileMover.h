@@ -26,7 +26,6 @@ class FileMover
         void print_vector(std::vector<std::string> vec);
         bool file_exists(std::string filepath);
         void copy_matches(std::vector<std::string> matches);
-        std::vector<std::string> convertToLower(std::vector<std::string> vec);
         std::string convertToLower(std::string str);
 
     protected:

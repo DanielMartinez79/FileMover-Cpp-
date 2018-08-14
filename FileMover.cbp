@@ -35,8 +35,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/FileMover.h" />
+		<Unit filename="include/utility.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/FileMover.cpp" />
+		<Unit filename="src/utility.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

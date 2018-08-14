@@ -1,43 +1,10 @@
 #include <iostream>
 #include "FileMover.h"
+#include "utility.h"
 using namespace std;
+using namespace utility;
 
-string prompt(string prompt)
-{
-    string answer;
-    cout << prompt << endl;
-    getline(cin,  answer);
-    return answer;
-}
 
-bool verify_folder(std::string path) {
-    struct stat folderInfo;
-
-    if ( stat(path.c_str(), &folderInfo) != 0) {
-        return false;
-    } else if ( S_ISDIR(folderInfo.st_mode)){
-        return true;
-    } else {
-        return false;
-    }
-}
-
-string convertToLower(string str){
-    for (unsigned i = 0; i < str.size(); i++){
-        if (str[i] > 64 && str[i] < 91) {
-            str[i] += 32;
-        }
-    }
-    return str;
-}
-
-vector<string> convertToLower(vector<string> vec){
-    for (unsigned i = 0; i < vec.size(); i++){
-        vec[i] = convertToLower(vec[i]);
-
-    }
-    return vec;
-}
 
 int main()
 {
