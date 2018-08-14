@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1534206275 source:c:\users\danny\filemover\main.cpp
+	<iostream>
+	"FileMover.h"
+
+1534202903 source:c:\users\danny\filemover\src\filemover.cpp
+	"FileMover.h"
+
+1534206242 c:\users\danny\filemover\include\filemover.h
+	<iostream>
+	<fstream>
+	<sys/stat.h>
+	<sys/types.h>
+	<algorithm>
+	<dirent.h>
+	<regex>
+
