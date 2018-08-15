@@ -12,29 +12,35 @@ FileMover::~FileMover()
     //dtor
 }
 
-std::string FileMover::getDestination(){
+std::string FileMover::getDestination()
+{
     return destinationPath;
 }
 
-void FileMover::setDestination(std::string dest){
+void FileMover::setDestination(std::string dest)
+{
     destinationPath = dest;
 }
 
-std::string FileMover::getSource(){
+std::string FileMover::getSource()
+{
     return sourcePath;
 }
 
-void FileMover::setSource(std::string source){
+void FileMover::setSource(std::string source)
+{
     sourcePath = source;
 }
 
-std::string FileMover::reg (std::string keywords){
+std::string FileMover::reg (std::string keywords)
+{
     std::regex exp("\\s");
     keywords = std::regex_replace(keywords, exp, ".?");
     return "\n*" + keywords + ".*";
 }
 
-std::vector <std::string> FileMover::get_files(std::string path) {
+std::vector <std::string> FileMover::get_files(std::string path)
+{
     DIR *directory;
     struct dirent *info;
     struct stat folderInfo;
@@ -51,16 +57,20 @@ std::vector <std::string> FileMover::get_files(std::string path) {
     return fileNames;
 }
 
-std::vector<std::string> FileMover::getSourceFiles(){
+std::vector<std::string> FileMover::getSourceFiles()
+{
     return get_files(sourcePath);
 }
-void FileMover::print_vector(std::vector<std::string> vec){
+
+void FileMover::print_vector(std::vector<std::string> vec)
+{
     for (unsigned i = 0; i < vec.size(); i++){
         std::cout << vec[i] << std::endl;
     }
 }
 
-std::vector <std::string> FileMover::search_folder(std::string keywords, std::vector<std::string> files){
+std::vector <std::string> FileMover::search_folder(std::string keywords, std::vector<std::string> files)
+{
     std::vector<std::string> matches;
     try {
         std::regex exp( keywords);
@@ -76,7 +86,8 @@ std::vector <std::string> FileMover::search_folder(std::string keywords, std::ve
     return matches;
 }
 
-void FileMover::copy_file(std::string pathSrc, std::string pathDest){
+void FileMover::copy_file(std::string pathSrc, std::string pathDest)
+{
     //Opening the source file at the end to get file size
     std::ifstream srcFile;
     srcFile.open(pathSrc, std::ios::binary | std::ios::ate);
@@ -96,14 +107,12 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest){
                 srcFile.read(buff, buff_size);//write to buffer
                 destFile.write(buff, buff_size);//read from buffer
                 total += buff_size;//increment the progress of file copying
-
             //std::cout << ((float)total/(float)file_size) * 100;
             //std::cout << "\r";
             }
         } else {
             srcFile.read(buff, file_size);
             destFile.write(buff, file_size);
-
         }
     }
     srcFile.close();
@@ -111,7 +120,8 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest){
 
 }
 
-bool FileMover::file_exists(std::string pathname){
+bool FileMover::file_exists(std::string pathname)
+{
     std::ifstream file;
     file.open(pathname);
     if (file.is_open()){
@@ -122,18 +132,44 @@ bool FileMover::file_exists(std::string pathname){
     }
 }
 
-void FileMover::copy_matches(std::vector<std::string> matches){
+void FileMover::copy_matches(std::vector<std::string> matches)
+{
     //loop through file names that matched with search words
     for (unsigned i = 0; i < matches.size(); i++){
-        if (!file_exists(destinationPath + "/" + matches[i])){//if file doesnt exist in destination folder
-            printf("Copying %s from %s to %s\n", matches[i].c_str(), sourcePath.c_str(), destinationPath.c_str());
-            copy_file(sourcePath + "/" + matches[i], destinationPath + "/" + matches[i]);
-            std::cout<< "Copying complete" << std::endl;
+        if (!file_exists(this->getDestination() + "/" + matches[i])){//if file doesnt exist in destination folder
+            if (checkDrives()) {
+                printf("Copying %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
+                move_file(matches[i]);
+                std::cout << "Move finished" << std::endl;
+            } else {
+                printf("Copying %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
+                copy_file(this->getSource() + "/" + matches[i], this->getDestination() + "/" + matches[i]);
+                std::cout<< "Copying complete" << std::endl;
+            }
         } else {//if file already exists in destination folder
-            printf("Error: %s already exists in %s \n", matches[i].c_str(), destinationPath.c_str());
+            printf("Error: %s already exists in %s \n", matches[i].c_str(), this->getDestination().c_str());
         }
     }
 }
 
+int FileMover::move_file(std::string filename)
+{
+    std::string src = this->getSource() + "/" + filename;
+    std::string dst = this->getDestination() + "/" + filename;
+
+    return rename(src.c_str(), dst.c_str());
+
+}
+
+bool FileMover::checkDrives(){
+
+    struct stat srcInfo, destInfo;
+
+    stat(this->getDestination().c_str(), &destInfo);
+    stat(this->getSource().c_str(), &srcInfo);
+    return (srcInfo.st_dev == destInfo.st_dev);
+
+
+}
 
 

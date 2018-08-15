@@ -16,6 +16,7 @@ int main()
 
             //creating FileMover object with the paths given by user
             FileMover fm(pathSrc, pathDest);
+            cout << fm.checkDrives() <<endl;
             //getting a vector of the files in the source path
             vector <string> files = fm.getSourceFiles();
             files = convertToLower(files);
