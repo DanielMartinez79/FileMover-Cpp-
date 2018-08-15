@@ -18,13 +18,9 @@ class FileMover
         std::string getSource();
         void setSource(std::string source);
 
-        std::vector <std::string> get_files(std::string path);
-        std::vector<std::string>getSourceFiles();
         std::string reg(std::string name);
         std::vector<std::string> search_folder(std::string keywords, std::vector<std::string> files);
         void copy_file(std::string pathname, std::string dest);
-        void print_vector(std::vector<std::string> vec);
-        bool file_exists(std::string filepath);
         void copy_matches(std::vector<std::string> matches);
         int move_file(std::string filepath);
         bool checkDrives();

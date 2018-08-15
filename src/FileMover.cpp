@@ -1,4 +1,5 @@
 #include "FileMover.h"
+#include "utility.h"
 
 
 FileMover::FileMover(std::string source, std::string dest)
@@ -37,36 +38,6 @@ std::string FileMover::reg (std::string keywords)
     std::regex exp("\\s");
     keywords = std::regex_replace(keywords, exp, ".?");
     return "\n*" + keywords + ".*";
-}
-
-std::vector <std::string> FileMover::get_files(std::string path)
-{
-    DIR *directory;
-    struct dirent *info;
-    struct stat folderInfo;
-    std::vector <std::string> fileNames;
-
-    if ((directory = opendir(path.c_str())) != NULL){
-        while ((info = readdir(directory)) != nullptr){
-            std::string fullPath = path + "/" + info->d_name;
-            if (stat(fullPath.c_str(), &folderInfo) == 0 && (S_ISREG(folderInfo.st_mode)))
-                fileNames.std::vector<std::string>::push_back(info->d_name);
-        }
-        closedir(directory);
-    }
-    return fileNames;
-}
-
-std::vector<std::string> FileMover::getSourceFiles()
-{
-    return get_files(sourcePath);
-}
-
-void FileMover::print_vector(std::vector<std::string> vec)
-{
-    for (unsigned i = 0; i < vec.size(); i++){
-        std::cout << vec[i] << std::endl;
-    }
 }
 
 std::vector <std::string> FileMover::search_folder(std::string keywords, std::vector<std::string> files)
@@ -120,27 +91,15 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest)
 
 }
 
-bool FileMover::file_exists(std::string pathname)
-{
-    std::ifstream file;
-    file.open(pathname);
-    if (file.is_open()){
-        file.close();
-        return true;
-    } else {
-        return false;
-    }
-}
-
 void FileMover::copy_matches(std::vector<std::string> matches)
 {
     //loop through file names that matched with search words
     for (unsigned i = 0; i < matches.size(); i++){
-        if (!file_exists(this->getDestination() + "/" + matches[i])){//if file doesnt exist in destination folder
+        if (!utility::exists(this->getDestination() + "/" + matches[i])){//if file doesnt exist in destination folder
             if (checkDrives()) {
-                printf("Copying %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
+                printf("Moving %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
                 move_file(matches[i]);
-                std::cout << "Move finished" << std::endl;
+                std::cout << "Move complete" << std::endl;
             } else {
                 printf("Copying %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
                 copy_file(this->getSource() + "/" + matches[i], this->getDestination() + "/" + matches[i]);
@@ -161,6 +120,8 @@ int FileMover::move_file(std::string filename)
 
 }
 
+/*This method checks if the destination and source folder are on the same device
+If so, it returns true. Otherwise it returns false */
 bool FileMover::checkDrives(){
 
     struct stat srcInfo, destInfo;

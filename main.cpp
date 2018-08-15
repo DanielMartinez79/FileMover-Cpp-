@@ -9,16 +9,17 @@ int main()
     while (true) {
     //ask user for the path of the folder they want to search
     string pathSrc = prompt("Where do I search?");
-    if (verify_folder(pathSrc)){ //verify that the folder exists
+    if (isDir(pathSrc)){ //verify that the folder exists
+        vector <string> files = getFiles(pathSrc);
+
         //asking user for the path to folder to save files in
         string pathDest = prompt("Where do I save?");
-        if (verify_folder(pathDest)){ //verifying that the folder exists
+
+        if (isDir(pathDest)){ //verifying that the folder exists
 
             //creating FileMover object with the paths given by user
             FileMover fm(pathSrc, pathDest);
-            cout << fm.checkDrives() <<endl;
             //getting a vector of the files in the source path
-            vector <string> files = fm.getSourceFiles();
             files = convertToLower(files);
             //asking user what words to search for in the source folder
             string searchFor = prompt("What should I search for?");
@@ -27,7 +28,7 @@ int main()
 
             if (matches.size() > 0) {
                 cout << "The following matches were found: \n"<< endl;
-                fm.print_vector(matches);
+                print_vector(matches);
                 if (prompt("\nWould you like to copy these files? (y/n)").compare("y") == 0){
                     fm.copy_matches(matches);
                 }
