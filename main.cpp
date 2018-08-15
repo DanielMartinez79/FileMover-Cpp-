@@ -4,8 +4,6 @@
 using namespace std;
 using namespace utility;
 
-
-
 int main()
 {
     while (true) {

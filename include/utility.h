@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <algorithm>
+#include <vector>
 namespace utility {
     std::string prompt(std::string prompt);
     bool verify_folder(std::string path);
