@@ -13,6 +13,8 @@ FileMover::~FileMover()
     //dtor
 }
 
+//Getters and setters
+
 std::string FileMover::getDestination()
 {
     return destinationPath;
@@ -33,6 +35,8 @@ void FileMover::setSource(std::string source)
     sourcePath = source;
 }
 
+/*This method takes a string and searches for any spaces in it
+If it finds any, it replaces them with wildcards and returns the regex-ready string */
 std::string FileMover::reg (std::string keywords)
 {
     std::regex exp("\\s");
@@ -40,7 +44,9 @@ std::string FileMover::reg (std::string keywords)
     return "\n*" + keywords + ".*";
 }
 
-std::vector <std::string> FileMover::search_folder(std::string keywords, std::vector<std::string> files)
+/*This method searches a the names of files that are stored in the 'files' vector
+If any name matches with the keywords given, it is placed in the return vector */
+std::vector <std::string> FileMover::searchFolder(std::string keywords, std::vector<std::string> files)
 {
     std::vector<std::string> matches;
     try {
@@ -57,7 +63,8 @@ std::vector <std::string> FileMover::search_folder(std::string keywords, std::ve
     return matches;
 }
 
-void FileMover::copy_file(std::string pathSrc, std::string pathDest)
+/*This method copies a file from the pathSrc path to the pathDest path */
+void FileMover::copyFile(std::string pathSrc, std::string pathDest)
 {
     //Opening the source file at the end to get file size
     std::ifstream srcFile;
@@ -68,18 +75,18 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest)
     destFile.open(pathDest, std::ios::binary);
 
     if (srcFile.is_open()) {
+
         long long file_size = srcFile.tellg();//getting file size
         srcFile.seekg(0, std::ios::beg);//moving put to start of file
         int buff_size = 1024 * 1024;
         char * buff = new char[buff_size];//1 MB buffer
         long long total = 0;//counter used to keep track of progress
+
         if (file_size > buff_size) {
             while (total < file_size) {
                 srcFile.read(buff, buff_size);//write to buffer
                 destFile.write(buff, buff_size);//read from buffer
                 total += buff_size;//increment the progress of file copying
-            //std::cout << ((float)total/(float)file_size) * 100;
-            //std::cout << "\r";
             }
         } else {
             srcFile.read(buff, file_size);
@@ -91,27 +98,40 @@ void FileMover::copy_file(std::string pathSrc, std::string pathDest)
 
 }
 
-void FileMover::copy_matches(std::vector<std::string> matches)
+/*This method attempts to move each file in the 'matches' vector
+from the source to the destination
+It checks to see if the file exists in the destination folder
+It also checks to see if the two paths are on the same drive
+If so, it moves the files instead of copying, otherwise it copies the file
+*/
+void FileMover::copyMatches(std::vector<std::string> matches)
 {
     //loop through file names that matched with search words
     for (unsigned i = 0; i < matches.size(); i++){
-        if (!utility::exists(this->getDestination() + "/" + matches[i])){//if file doesnt exist in destination folder
+
+        //if file doesnt exist in destination folder
+        if (!utility::exists(this->getDestination() + "/" + matches[i])){
+
+            //if the paths are on same drive, move instead of copy
             if (checkDrives()) {
                 printf("Moving %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
-                move_file(matches[i]);
+                moveFile(matches[i]);
                 std::cout << "Move complete" << std::endl;
-            } else {
+
+            } else { //else copy from source to destination
                 printf("Copying %s from %s to %s\n", matches[i].c_str(), this->getSource().c_str(), this->getDestination().c_str());
-                copy_file(this->getSource() + "/" + matches[i], this->getDestination() + "/" + matches[i]);
+                copyFile(this->getSource() + "/" + matches[i], this->getDestination() + "/" + matches[i]);
                 std::cout<< "Copying complete" << std::endl;
+
             }
-        } else {//if file already exists in destination folder
+        } else { //if file already exists in destination folder
             printf("Error: %s already exists in %s \n", matches[i].c_str(), this->getDestination().c_str());
         }
     }
 }
 
-int FileMover::move_file(std::string filename)
+/*This method moves the file from one path on a device to another */
+int FileMover::moveFile(std::string filename)
 {
     std::string src = this->getSource() + "/" + filename;
     std::string dst = this->getDestination() + "/" + filename;

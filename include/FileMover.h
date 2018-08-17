@@ -17,12 +17,11 @@ class FileMover
         void setDestination(std::string dest);
         std::string getSource();
         void setSource(std::string source);
-
         std::string reg(std::string name);
-        std::vector<std::string> search_folder(std::string keywords, std::vector<std::string> files);
-        void copy_file(std::string pathname, std::string dest);
-        void copy_matches(std::vector<std::string> matches);
-        int move_file(std::string filepath);
+        std::vector<std::string> searchFolder(std::string keywords, std::vector<std::string> files);
+        void copyFile(std::string pathname, std::string dest);
+        void copyMatches(std::vector<std::string> matches);
+        int moveFile(std::string filepath);
         bool checkDrives();
 
     protected:

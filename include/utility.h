@@ -12,11 +12,8 @@ namespace utility {
     bool isFile(std::string path);
     bool isDir(std::string path);
     bool exists(std::string path);
-    void print_vector(std::vector<std::string> vec);
+    void printVector(std::vector<std::string> vec);
     std::vector <std::string> getFiles(std::string path);
-
-
-
 
 }
 
